@@ -7,11 +7,22 @@ import { useState } from "react";
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
+  const [path, setPath] = useState("");
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     setGreetMsg(await invoke("greet", { name }));
   }
+
+  const invokeScreenshot = async () => {
+    const result = await invoke("screen_capture");
+
+    const parsedResult = JSON.parse(result as string);
+
+    if (parsedResult["path"]) {
+      setPath(parsedResult["path"]);
+    }
+  };
 
   return (
     <div className="container">
@@ -31,6 +42,12 @@ function App() {
       </form>
 
       <p>{greetMsg}</p>
+
+      {{ path } && <img src={path} alt="screenshot" />}
+
+      <Button type="button" onClick={() => invokeScreenshot()}>
+        Invoke Screenshot
+      </Button>
     </div>
   );
 }
