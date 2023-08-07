@@ -2,17 +2,12 @@ import "./global.css";
 
 import { Button } from "./components/ui/button";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
   const [path, setPath] = useState("");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const navigate = useNavigate();
 
   const invokeScreenshot = async () => {
     const result = await invoke("screen_capture");
@@ -26,27 +21,14 @@ function App() {
 
   return (
     <div className="container">
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <Button type="submit">Click me</Button>
-      </form>
-
-      <p>{greetMsg}</p>
-
-      {{ path } && <img src={path} alt="screenshot" />}
+      {path.length > 0 ? <img src={path} alt="screenshot" /> : <h1>Home</h1>}
 
       <Button type="button" onClick={() => invokeScreenshot()}>
         Invoke Screenshot
+      </Button>
+
+      <Button type="button" onClick={() => navigate("/auth")}>
+        Go to Auth
       </Button>
     </div>
   );
