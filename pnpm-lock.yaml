@@ -22,6 +22,9 @@ dependencies:
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
+  html-to-image:
+    specifier: ^1.11.11
+    version: 1.11.11
   jotai:
     specifier: ^2.3.0
     version: 2.3.0(@types/react@18.2.15)(react@18.2.0)
@@ -1177,6 +1180,10 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /html-to-image@1.11.11:
+    resolution: {integrity: sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==}
+    dev: false
 
   /inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}

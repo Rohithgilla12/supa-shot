@@ -26,7 +26,7 @@ async fn screen_capture() -> Result<String, String> {
     // Execute screencapture by using  command and add a file location to save the screenshot temporarily
     // `screencapture -ci /tmp/screenshot.png`
     let id = Uuid::new_v4();
-    let path = format!("/tmp/supa-shot/{}.png", id);
+    let path = format!("/tmp/{}.png", id);
 
     let output = std::process::Command::new("screencapture")
         .args(["-i", &path])

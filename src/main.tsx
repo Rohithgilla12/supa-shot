@@ -3,9 +3,9 @@ import "./styles.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
-import { Auth } from "./routes/auth";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { SupaAuth } from "./routes/auth";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <Auth />,
+    element: <SupaAuth />,
   },
 ]);
 
