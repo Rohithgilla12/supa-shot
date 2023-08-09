@@ -66,6 +66,12 @@ function App() {
 
       if (storageData) {
         console.log(storageData.path);
+        const path = storageData.path;
+
+        // Get public url
+        const url = supabase.storage.from("shots").getPublicUrl(path);
+
+        console.log(url.data.publicUrl);
       }
     }
   };
