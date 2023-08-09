@@ -1,11 +1,11 @@
 import "./global.css";
 
+import { toBlob, toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "./components/ui/button";
 import { invoke } from "@tauri-apps/api/tauri";
 import { supabase } from "./data/db";
-import { toPng } from "html-to-image";
 import { useNavigate } from "react-router-dom";
 
 function App() {
@@ -45,6 +45,31 @@ function App() {
     console.log(data);
   };
 
+  const shareImage = async () => {
+    // toFile
+    const data = await toBlob(ref.current!, { cacheBust: true });
+    const userId = session?.user?.id || "anonymous";
+
+    if (data) {
+      const file = new File([data], "screenshot.png", { type: "image/png" });
+
+      const { data: storageData, error } = await supabase.storage
+        .from("shots")
+        .upload(`${userId}/screenshot-${Date.now()}.png`, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (error) {
+        console.error(error);
+      }
+
+      if (storageData) {
+        console.log(storageData.path);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {path.length > 0 ? (
@@ -76,6 +101,10 @@ function App() {
 
       <Button className="m-4" type="button" onClick={downloadImage}>
         Download Image
+      </Button>
+
+      <Button className="m-4" type="button" onClick={shareImage}>
+        Share Image
       </Button>
 
       <Button className="m-4" type="button" onClick={() => navigate("/auth")}>
