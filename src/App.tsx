@@ -1,8 +1,9 @@
 import "./global.css";
 
 import { toBlob, toPng } from "html-to-image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
+import { Auth } from "@supabase/auth-ui-react";
 import { Button } from "./components/ui/button";
 import { invoke } from "@tauri-apps/api/tauri";
 import { supabase } from "./data/db";
@@ -11,23 +12,9 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const [path, setPath] = useState("");
   const [watermark, setWatermark] = useState("");
-  const [session, setSession] = useState(null);
   const navigate = useNavigate();
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session as any);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session as any);
-    });
-
-    return () => subscription?.unsubscribe();
-  }, []);
+  const { user } = Auth.useUser();
 
   const invokeScreenshot = async () => {
     const result = await invoke("screen_capture");
@@ -48,7 +35,7 @@ function App() {
   const shareImage = async () => {
     // toFile
     const data = await toBlob(ref.current!, { cacheBust: true });
-    const userId = session?.user?.id || "anonymous";
+    const userId = user?.id || "anonymous";
 
     if (data) {
       const file = new File([data], "screenshot.png", { type: "image/png" });
@@ -57,7 +44,6 @@ function App() {
         .from("shots")
         .upload(`${userId}/screenshot-${Date.now()}.png`, file, {
           cacheControl: "3600",
-          upsert: false,
         });
 
       if (error) {
@@ -89,8 +75,8 @@ function App() {
         <h1>Home</h1>
       )}
       <p>
-        {session
-          ? `Logged in as ${JSON.stringify(session, null, 2)}`
+        {user
+          ? `Logged in as ${JSON.stringify(user, null, 2)}`
           : "Not logged in"}
       </p>
 
@@ -101,7 +87,7 @@ function App() {
         onChange={(e) => setWatermark(e.target.value)}
       />
 
-      <Button className="m-4" type="button" onClick={() => invokeScreenshot()}>
+      <Button className="m-4" type="button" onClick={invokeScreenshot}>
         Invoke Screenshot
       </Button>
 
